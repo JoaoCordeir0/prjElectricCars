@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace prjElectricCars
@@ -8,7 +7,7 @@ namespace prjElectricCars
     {
         static void NumberOfCarsPerState(IEnumerable<RowModel> rows)
         {
-            // Usa PLINQ para contar a quantidade de carros por estado
+            // Aplica o PLINQ para contar a quantidade de carros por estado
             var stateCounts = rows
                 .AsParallel() 
                 .GroupBy(row => row.State)
@@ -18,10 +17,75 @@ namespace prjElectricCars
                     Count = group.Count()
                 })
                 .ToList();
-            
+
+            // Resultado
             foreach (var stateCount in stateCounts)
             {
                 Console.WriteLine($"Estado: {stateCount.State}, Quantidade: {stateCount.Count}");
+            }
+        }
+
+        static void AveragePricePerModel(IEnumerable<RowModel> rows) 
+        {
+            // Aplica o PLINQ para contar a quantidade de modelos e obter a soma de cada um
+            var modelCounts = rows
+                .AsParallel()
+                .GroupBy(row => row.Model)
+                .Select(group => new
+                {
+                    Model = group.Key,
+                    Count = group.Count(),
+                    Total = group.Sum(row => row.BaseMsrp)
+                })
+                .ToList();
+
+            // Resultado
+            foreach (var modelCount in modelCounts)
+            {
+                Console.WriteLine($"Modelo: {modelCount.Model}, Quantidade: {modelCount.Count}, Valor: {modelCount.Total}, Média: {modelCount.Total / modelCount.Count}");
+            }
+        }
+       
+        static void NumberOfChargingPointsPerState(IEnumerable<RowModel> rows)
+        {
+            // Aplica o PLINQ para contar a quantidade de pontos de carregamento por estado
+            var chargingPointsByState = rows
+                .AsParallel()
+                .GroupBy(row => row.State)
+                .Select(group => new
+                {
+                    State = group.Key,
+                    ChargingPointCount = rows.Where(v => v.State == group.Key)
+                        .GroupBy(row => row.ElectricUtility)
+                        .Count()
+                })
+                .ToList();
+
+            // Resultado
+            foreach (var stateCount in chargingPointsByState)
+            {
+                Console.WriteLine($"Estado: {stateCount.State}, Pontos de Carregamento: {stateCount.ChargingPointCount}");
+            }
+        }
+
+        static void AverageVehicleRangeByManufacturer(IEnumerable<RowModel> rows)
+        {
+            // Aplica o PLINQ para contar a quantidade de fabricantes e obter a média
+            var modelCounts = rows
+                .AsParallel()
+                .GroupBy(row => row.Make)
+                .Select(group => new
+                {
+                    Make = group.Key,
+                    Count = group.Count(),
+                    Total = group.Sum(row => row.ElectricRange)
+                })
+                .ToList();
+
+            // Resultado
+            foreach (var modelCount in modelCounts)
+            {
+                Console.WriteLine($"Fabricante: {modelCount.Make}, Quantidade: {modelCount.Count}, Valor: {modelCount.Total}, Média: {modelCount.Total / modelCount.Count}");
             }
         }
 
@@ -56,6 +120,21 @@ namespace prjElectricCars
             Console.WriteLine("Executando método 1");            
             NumberOfCarsPerState(rows);
             Console.WriteLine("Fim do método 1\n\n");
+
+            // Método 02: Calcular o preço médio(campo Base MSRP) por modelo(campo Model).
+            Console.WriteLine("Executando método 2");
+            AveragePricePerModel(rows);
+            Console.WriteLine("Fim do método 2\n\n");
+
+            // Método 03: Calcular a quantidade de pontos de carregamento(campo Electric Utility) por estado(campo State).
+            Console.WriteLine("Executando método 3");
+            NumberOfChargingPointsPerState(rows);
+            Console.WriteLine("Fim do método 3\n\n");
+
+            // Método 04: Calcular a autonomia média do veículo (campo Electric Range) por fabricante (Make).
+            Console.WriteLine("Executando método 4");
+            AverageVehicleRangeByManufacturer(rows);
+            Console.WriteLine("Fim do método 4\n\n");
         }
     }
 }
