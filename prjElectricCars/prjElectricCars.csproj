@@ -8,11 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\CarrosEletricos.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\CarrosEletricos.xml" />
+    <Compile Remove="Assets\**" />
+    <EmbeddedResource Remove="Assets\**" />
+    <None Remove="Assets\**" />
   </ItemGroup>
 
 </Project>
