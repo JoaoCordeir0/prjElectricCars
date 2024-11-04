@@ -27,7 +27,7 @@ namespace prjElectricCars
                 .Where(s => !string.IsNullOrEmpty(s.State)) // Filtro para não pegar estados vazios
                 .ToList();
 
-            int countCarSum = 0;
+            decimal countCarSum = 0;
             int countState = 0;
 
             // Resultados
@@ -37,7 +37,8 @@ namespace prjElectricCars
                 countState++;
                 Console.WriteLine($"Estado: {stateCount.State}, Quantidade: {stateCount.Count}");
             }
-            Console.WriteLine($"Média: {countCarSum / countState}");            
+            double media = (double)(countCarSum / countState);
+            Console.WriteLine($"Média: {Math.Round(media, 2)}");
 
             metrics.EndClock();
         }
