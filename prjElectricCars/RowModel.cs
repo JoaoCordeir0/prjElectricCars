@@ -18,7 +18,7 @@ namespace prjElectricCars
         public string Model { get; set; }
         public string EvType { get; set; }
         public string CafvType { get; set; }
-        public int ElectricRange { get; set; }
+        public decimal ElectricRange { get; set; }
         public decimal BaseMsrp { get; set; }
         public string LegislativeDistrict { get; set; }
         public string DolVehicleId { get; set; }

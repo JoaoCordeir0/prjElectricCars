@@ -24,14 +24,21 @@ namespace prjElectricCars
                     State = group.Key,
                     Count = group.Count()
                 })
+                .Where(s => !string.IsNullOrEmpty(s.State)) // Filtro para não pegar estados vazios
                 .ToList();
+
+            int countCarSum = 0;
+            int countState = 0;
 
             // Resultados
             foreach (var stateCount in stateCounts)
             {
+                countCarSum += stateCount.Count;
+                countState++;
                 Console.WriteLine($"Estado: {stateCount.State}, Quantidade: {stateCount.Count}");
-            }    
-            
+            }
+            Console.WriteLine($"Média: {countCarSum / countState}");            
+
             metrics.EndClock();
         }
 
@@ -52,12 +59,15 @@ namespace prjElectricCars
                     Count = group.Count(),
                     Total = group.Sum(row => row.BaseMsrp)
                 })
+                .Where(s => !string.IsNullOrEmpty(s.Model) && s.Total > 0) // Filtro para não pegar modelos vazios e com total igual a 0
                 .ToList();
 
             // Resultado
             foreach (var modelCount in modelCounts)
-            {
-                Console.WriteLine($"Modelo: {modelCount.Model}, Quantidade: {modelCount.Count}, Valor: {modelCount.Total}, Média: {modelCount.Total / modelCount.Count}");
+            {           
+                double media = (double)(modelCount.Total / modelCount.Count);
+
+                Console.WriteLine($"Modelo: {modelCount.Model}, Quantidade: {modelCount.Count}, Valor: {modelCount.Total}, Média: {Math.Round(media, 2)}");
             }
 
             metrics.EndClock();
@@ -81,6 +91,7 @@ namespace prjElectricCars
                         .GroupBy(row => row.ElectricUtility)
                         .Count()
                 })
+                .Where(s => !string.IsNullOrEmpty(s.State)) // Filtro para não pegar estados vazios
                 .ToList();
 
             // Resultados
@@ -100,7 +111,7 @@ namespace prjElectricCars
             metrics.StartClock();
 
             // Aplica o PLINQ para contar a quantidade de fabricantes e obter a média
-            var modelCounts = rows
+            var makeCounts = rows
                 .AsParallel()
                 .GroupBy(row => row.Make)
                 .Select(group => new
@@ -109,12 +120,15 @@ namespace prjElectricCars
                     Count = group.Count(),
                     Total = group.Sum(row => row.ElectricRange)
                 })
+                .Where(s => !string.IsNullOrEmpty(s.Make) && s.Total > 0) // Filtro para não pegar fabricantes vazios e com total igual a 0
                 .ToList();
 
             // Resultado
-            foreach (var modelCount in modelCounts)
+            foreach (var makeCount in makeCounts)
             {
-                Console.WriteLine($"Fabricante: {modelCount.Make}, Quantidade: {modelCount.Count}, Valor: {modelCount.Total}, Média: {modelCount.Total / modelCount.Count}");
+                double media = (double)(makeCount.Total / makeCount.Count);
+
+                Console.WriteLine($"Fabricante: {makeCount.Make}, Quantidade: {makeCount.Count}, Valor: {makeCount.Total}, Média: {Math.Round(media, 2)}");
             }
 
             metrics.EndClock();

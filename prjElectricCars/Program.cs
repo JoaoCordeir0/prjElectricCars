@@ -25,7 +25,7 @@ namespace prjElectricCars
                     Model = (string?) row.Element("model") ?? String.Empty,
                     EvType = (string?) row.Element("ev_type") ?? String.Empty,
                     CafvType = (string?) row.Element("cafv_type") ?? String.Empty,
-                    ElectricRange = (int?) row.Element("electric_range") ?? 0,
+                    ElectricRange = (decimal?) row.Element("electric_range") ?? 0m,
                     BaseMsrp = (decimal?) row.Element("base_msrp") ?? 0m,
                     LegislativeDistrict = (string?) row.Element("legislative_district") ?? String.Empty,
                     DolVehicleId = (string?) row.Element("dol_vehicle_id") ?? String.Empty,
